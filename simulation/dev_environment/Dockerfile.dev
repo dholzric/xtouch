@@ -1,0 +1,128 @@
+# xtouch Development Environment
+FROM ubuntu:22.04
+
+# Prevent interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    # Build tools
+    build-essential \
+    cmake \
+    ninja-build \
+    git \
+    curl \
+    wget \
+    unzip \
+    # Python development
+    python3 \
+    python3-pip \
+    python3-venv \
+    # Audio development
+    portaudio19-dev \
+    libsndfile1-dev \
+    libfftw3-dev \
+    pulseaudio \
+    alsa-utils \
+    # Graphics and UI
+    libsdl2-dev \
+    libgl1-mesa-dev \
+    libglu1-mesa-dev \
+    libxrandr2 \
+    libxinerama1 \
+    libxcursor1 \
+    libxi6 \
+    # VNC and desktop
+    xvfb \
+    x11vnc \
+    fluxbox \
+    # Node.js for web development
+    nodejs \
+    npm \
+    # Development tools
+    gdb \
+    valgrind \
+    strace \
+    htop \
+    tmux \
+    vim \
+    nano \
+    tree \
+    # Documentation
+    doxygen \
+    graphviz \
+    # Network tools
+    netcat \
+    socat \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PlatformIO
+RUN pip3 install --upgrade pip
+RUN pip3 install platformio
+
+# Install Python development packages
+RUN pip3 install \
+    pytest \
+    pytest-cov \
+    black \
+    flake8 \
+    mypy \
+    sphinx \
+    sphinx-rtd-theme \
+    watchdog \
+    psutil \
+    requests \
+    websockets \
+    aiohttp \
+    fastapi \
+    uvicorn
+
+# Install Node.js packages globally
+RUN npm install -g \
+    @vscode/vsce \
+    eslint \
+    prettier \
+    typescript \
+    ts-node \
+    nodemon \
+    concurrently \
+    http-server \
+    live-server
+
+# Set up workspace
+WORKDIR /workspace
+
+# Create development user
+RUN useradd -m -s /bin/bash developer && \
+    usermod -aG audio developer && \
+    usermod -aG sudo developer
+
+# Set up VNC
+RUN mkdir -p /home/developer/.vnc
+COPY scripts/setup_vnc.sh /scripts/setup_vnc.sh
+RUN chmod +x /scripts/setup_vnc.sh
+
+# Copy development scripts
+COPY scripts/ /scripts/
+RUN chmod +x /scripts/*.sh /scripts/*.py
+
+# Set up PlatformIO environment
+ENV PLATFORMIO_CORE_DIR=/root/.platformio
+ENV PATH="${PATH}:/root/.platformio/penv/bin"
+
+# Initialize PlatformIO
+RUN pio platform install espressif32
+
+# Set up hot-reload environment
+ENV PYTHONPATH="/workspace:/scripts"
+ENV NODE_PATH="/usr/lib/node_modules"
+
+# Expose common development ports
+EXPOSE 3000 8080 5900 4000 8000
+
+# Set up entrypoint
+COPY scripts/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["bash"]

@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "author": "Claude Code",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp32",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-ili9341",
+      "id": "display",
+      "top": -67.2,
+      "left": 153.6,
+      "attrs": {
+        "width": "240",
+        "height": "320"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 67.2,
+      "left": 153.6,
+      "attrs": {
+        "value": "2200"
+      }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r2",
+      "top": 96,
+      "left": 153.6,
+      "attrs": {
+        "value": "2200"
+      }
+    },
+    {
+      "type": "wokwi-microsd-card",
+      "id": "sdcard",
+      "top": 200,
+      "left": 300,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "buzzer",
+      "top": 200,
+      "left": 50,
+      "attrs": {}
+    }
+  ],
+  "connections": [
+    [ "esp32:TX0", "$serialMonitor:RX", "", [] ],
+    [ "esp32:RX0", "$serialMonitor:TX", "", [] ],
+    [ "esp32:GND.1", "display:GND", "black", [ "v0" ] ],
+    [ "esp32:3V3", "display:VCC", "red", [ "v0" ] ],
+    [ "esp32:D2", "display:CLK", "green", [ "v0" ] ],
+    [ "esp32:D15", "display:DIN", "blue", [ "v0" ] ],
+    [ "esp32:D21", "display:DC", "yellow", [ "v0" ] ],
+    [ "esp32:D22", "display:RST", "orange", [ "v0" ] ],
+    [ "esp32:D5", "display:CS", "purple", [ "v0" ] ],
+    [ "esp32:D4", "display:T_CLK", "gray", [ "v0" ] ],
+    [ "esp32:D16", "display:T_CS", "white", [ "v0" ] ],
+    [ "esp32:D17", "display:T_DIN", "brown", [ "v0" ] ],
+    [ "esp32:D18", "display:T_DO", "pink", [ "v0" ] ],
+    [ "esp32:D19", "display:T_IRQ", "cyan", [ "v0" ] ],
+    [ "esp32:D23", "sdcard:MOSI", "blue", [ "v0" ] ],
+    [ "esp32:D19", "sdcard:MISO", "green", [ "v0" ] ],
+    [ "esp32:D18", "sdcard:SCK", "yellow", [ "v0" ] ],
+    [ "esp32:D5", "sdcard:CS", "orange", [ "v0" ] ],
+    [ "esp32:3V3", "sdcard:VCC", "red", [ "v0" ] ],
+    [ "esp32:GND.2", "sdcard:GND", "black", [ "v0" ] ],
+    [ "esp32:D26", "buzzer:1", "purple", [ "v0" ] ],
+    [ "esp32:GND.3", "buzzer:2", "black", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}

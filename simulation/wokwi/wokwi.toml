@@ -1,0 +1,65 @@
+[wokwi]
+version = 1
+firmware = "../../.pio/build/esp32dev/firmware.bin"
+elf = "../../.pio/build/esp32dev/firmware.elf"
+
+[[wokwi.parts]]
+name = "ESP32-2432S028R"
+
+[wokwi.sketch]
+filename = "../../src/main.cpp"
+
+[wokwi.serial]
+# Monitor serial output
+monitor = true
+speed = 115200
+
+[wokwi.clock]
+# Set clock speed (240 MHz for ESP32)
+speed = 240000000
+
+[wokwi.flash]
+# Flash memory size
+size = "4MB"
+mode = "dio"
+speed = "40m"
+
+[wokwi.chips.esp32]
+# ESP32 specific configuration
+psram = false
+flash_size = "4MB"
+
+[wokwi.components.ili9341]
+# ILI9341 TFT Display configuration
+width = 240
+height = 320
+rotation = 0
+
+[wokwi.components.xpt2046]
+# Touch controller configuration  
+enabled = true
+
+[wokwi.components.sdcard]
+# SD Card simulation
+enabled = true
+size = "1GB"
+# Pre-populate with test audio files
+files = [
+  "test_files/audio/test.wav",
+  "test_files/audio/test.mp3",
+  "test_files/config/settings.json"
+]
+
+[wokwi.components.i2s]
+# I2S audio output simulation
+enabled = true
+sample_rate = 44100
+bits_per_sample = 16
+channels = 2
+
+[wokwi.debug]
+# Enable debugging features
+gdb = true
+monitor_heap = true
+monitor_stack = true
+trace_memory = true

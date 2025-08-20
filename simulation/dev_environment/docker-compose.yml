@@ -1,0 +1,197 @@
+version: '3.8'
+
+services:
+  # Main development container with all tools
+  xtouch-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: xtouch-dev-main
+    volumes:
+      - ../../:/workspace
+      - dev-cache:/workspace/.cache
+      - platformio-cache:/root/.platformio
+      - vscode-extensions:/root/.vscode-server/extensions
+    ports:
+      - "3000:3000"    # Web demo
+      - "8080:8080"    # LVGL simulator web interface
+      - "5900:5900"    # VNC for GUI apps
+      - "4000:4000"    # Documentation server
+      - "8000:8000"    # Development server
+    environment:
+      - DISPLAY=:1
+      - VNC_PASSWORD=xtouch
+      - WORKSPACE=/workspace
+      - PLATFORMIO_CORE_DIR=/root/.platformio
+    stdin_open: true
+    tty: true
+    privileged: true  # For audio device access
+    devices:
+      - "/dev/snd:/dev/snd"  # Audio devices
+    networks:
+      - xtouch-dev-network
+
+  # Wokwi simulator service
+  wokwi-simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile.wokwi
+    container_name: xtouch-wokwi
+    volumes:
+      - ../../:/workspace
+      - wokwi-cache:/root/.wokwi
+    ports:
+      - "9012:9012"    # Wokwi web interface
+      - "9013:9013"    # Wokwi API
+    environment:
+      - WOKWI_LICENSE_KEY=${WOKWI_LICENSE_KEY}
+      - WORKSPACE=/workspace
+    depends_on:
+      - xtouch-dev
+    networks:
+      - xtouch-dev-network
+
+  # Audio processing service
+  audio-simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile.audio
+    container_name: xtouch-audio
+    volumes:
+      - ../../:/workspace
+      - audio-cache:/workspace/simulation/audio_desktop/build
+    ports:
+      - "8001:8001"    # Audio control API
+      - "8002:8002"    # Audio streaming
+    environment:
+      - PULSE_SERVER=unix:/run/user/1000/pulse/native
+      - WORKSPACE=/workspace
+    depends_on:
+      - xtouch-dev
+    networks:
+      - xtouch-dev-network
+
+  # Web demo development server
+  web-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: xtouch-web-demo
+    volumes:
+      - ../../simulation/web_demo:/app
+      - web-node-modules:/app/node_modules
+    ports:
+      - "3001:3000"    # Development server
+      - "3002:3001"    # HMR websocket
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - FAST_REFRESH=true
+    command: npm run dev
+    depends_on:
+      - xtouch-dev
+    networks:
+      - xtouch-dev-network
+
+  # File watcher and build automation
+  build-watcher:
+    build:
+      context: .
+      dockerfile: Dockerfile.watcher
+    container_name: xtouch-build-watcher
+    volumes:
+      - ../../:/workspace
+      - build-cache:/workspace/.build-cache
+    environment:
+      - WORKSPACE=/workspace
+      - WATCH_PATTERNS=src/**/*.cpp,src/**/*.c,src/**/*.h,platformio.ini
+    command: python /scripts/build_watcher.py
+    depends_on:
+      - xtouch-dev
+    networks:
+      - xtouch-dev-network
+
+  # Documentation server with live reload
+  docs-server:
+    image: squidfunk/mkdocs-material:latest
+    container_name: xtouch-docs
+    volumes:
+      - ../../docs:/docs
+      - ../../:/workspace
+    ports:
+      - "4001:8000"
+    command: mkdocs serve --dev-addr=0.0.0.0:8000
+    networks:
+      - xtouch-dev-network
+
+  # Test automation service
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: xtouch-test-runner
+    volumes:
+      - ../../:/workspace
+      - test-results:/workspace/test-results
+    environment:
+      - WORKSPACE=/workspace
+      - PYTEST_ARGS=--verbose --tb=short
+    command: python /scripts/test_automation.py
+    depends_on:
+      - xtouch-dev
+      - wokwi-simulator
+      - audio-simulator
+      - web-demo
+    networks:
+      - xtouch-dev-network
+
+  # Performance monitoring
+  monitoring:
+    image: prom/prometheus:latest
+    container_name: xtouch-monitoring
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - xtouch-dev-network
+
+  # Grafana for metrics visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: xtouch-grafana
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana:/etc/grafana/provisioning
+    ports:
+      - "3003:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=xtouch
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      - monitoring
+    networks:
+      - xtouch-dev-network
+
+volumes:
+  dev-cache:
+  platformio-cache:
+  vscode-extensions:
+  wokwi-cache:
+  audio-cache:
+  web-node-modules:
+  build-cache:
+  test-results:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  xtouch-dev-network:
+    driver: bridge
