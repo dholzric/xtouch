@@ -167,11 +167,8 @@ class XTouchDemo {
     }
 
     startBoomboxAnimations() {
-        // Animate spectrum display
-        this.animateSpectrum();
-        
-        // Animate waveform
-        this.animateWaveform();
+        // Animate main spectrum display
+        this.animateMainSpectrum();
         
         // Animate power meter
         this.animatePowerMeter();
@@ -225,35 +222,52 @@ class XTouchDemo {
         animate();
     }
 
-    animateWaveform() {
-        const canvas = document.getElementById('waveform');
+    animateMainSpectrum() {
+        const canvas = document.getElementById('main-spectrum');
         if (!canvas) return;
         
         const ctx = canvas.getContext('2d');
         const width = canvas.width;
         const height = canvas.height;
-        let phase = 0;
+        const bars = 12; // More bars for better frequency resolution
+        const barWidth = width / bars;
         
         const animate = () => {
             ctx.clearRect(0, 0, width, height);
             
-            // Draw waveform
-            ctx.strokeStyle = '#00ff88';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            
-            for (let x = 0; x < width; x++) {
-                const y = height / 2 + Math.sin((x + phase) * 0.1) * 15 + 
-                         Math.sin((x + phase) * 0.05) * 5;
-                if (x === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
+            // Get real spectrum data if available
+            let spectrumData = null;
+            if (this.audioEngine && this.isPlaying) {
+                spectrumData = this.audioEngine.getSpectrumData();
             }
             
-            ctx.stroke();
-            phase += 2;
+            for (let i = 0; i < bars; i++) {
+                let barHeight;
+                if (spectrumData && spectrumData.length > 0) {
+                    // Use real audio spectrum data
+                    barHeight = spectrumData[Math.floor(i * spectrumData.length / bars)] * height * 0.9 + height * 0.05;
+                } else {
+                    // Fallback to gentle random animation when no audio
+                    barHeight = Math.random() * height * 0.4 + height * 0.1;
+                }
+                
+                const x = i * barWidth;
+                
+                // Enhanced color gradient - frequency-based colors
+                const intensity = barHeight / height;
+                const hue = 120 + i * 8; // Green to cyan spectrum (120-216)
+                const saturation = 70 + intensity * 30;
+                const lightness = 35 + intensity * 35;
+                
+                // Create gradient for each bar
+                const gradient = ctx.createLinearGradient(0, height, 0, 0);
+                gradient.addColorStop(0, `hsl(${hue}, ${saturation}%, ${lightness-10}%)`);
+                gradient.addColorStop(0.7, `hsl(${hue}, ${saturation}%, ${lightness}%)`);
+                gradient.addColorStop(1, `hsl(${hue}, ${saturation+20}%, ${lightness+20}%)`);
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x + 1, height - barHeight, barWidth - 2, barHeight);
+            }
             
             requestAnimationFrame(animate);
         };

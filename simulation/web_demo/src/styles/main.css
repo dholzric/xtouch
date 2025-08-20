@@ -466,16 +466,17 @@ body {
   color: white;
 }
 
-/* Waveform Display */
-.waveform-display {
+/* Main Spectrum Display */
+.spectrum-display-main {
   width: 100px;
-  height: 30px;
-  background: rgba(0, 0, 0, 0.4);
+  height: 55px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 255, 136, 0.3);
   border-radius: 3px;
   padding: 2px;
 }
 
-#waveform {
+#main-spectrum {
   width: 100%;
   height: 100%;
 }
@@ -575,8 +576,12 @@ body {
 /* Navigation Tabs */
 .navigation-tabs {
   display: flex;
-  background: rgba(0, 0, 0, 0.3);
-  height: 24px;
+  background: rgba(0, 0, 0, 0.4);
+  height: 28px;
+  margin-top: 12px;
+  border-radius: 4px;
+  position: relative;
+  z-index: 10;
 }
 
 .tab-btn {
@@ -584,10 +589,12 @@ body {
   background: none;
   border: none;
   color: white;
-  padding: 4px 2px;
-  font-size: 7px;
+  padding: 6px 2px;
+  font-size: 8px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
+  border-radius: 3px;
+  margin: 2px;
 }
 
 .tab-btn:hover,
@@ -1196,7 +1203,7 @@ body {
 }
 
 .progress-container {
-  margin: 4px 0 !important;
+  margin: 4px 0 8px 0 !important;
   width: 100%;
 }
 
