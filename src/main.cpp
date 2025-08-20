@@ -19,8 +19,9 @@
 #include "xtouch/settings.h"
 #include "xtouch/net.h"
 #include "xtouch/firmware.h"
-#include "xtouch/mqtt.h"
-#include "xtouch/sensors/chamber.h"
+#include "xtouch/config.h"
+// #include "xtouch/mqtt.h" // Disabled for boombox build
+// #include "xtouch/sensors/chamber.h" // Disabled for boombox build
 #include "xtouch/events.h"
 #include "xtouch/connection.h"
 #include "xtouch/coldboot.h"
@@ -62,13 +63,13 @@ void setup()
   xtouch_screen_setupScreenTimer();
   xtouch_setupGlobalEvents();
 
-  xtouch_mqtt_setup();
-  xtouch_chamber_timer_init();
+  // xtouch_mqtt_setup(); // Disabled for boombox build
+  // xtouch_chamber_timer_init(); // Disabled for boombox build
 }
 
 void loop()
 {
   lv_timer_handler();
   lv_task_handler();
-  xtouch_mqtt_loop();
+  // xtouch_mqtt_loop(); // Disabled for boombox build
 }

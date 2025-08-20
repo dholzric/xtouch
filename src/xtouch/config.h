@@ -23,12 +23,13 @@ DynamicJsonDocument xtouch_load_config()
 {
     DynamicJsonDocument config = xtouch_filesystem_readJson(SD, xtouch_paths_config);
 
-    strcpy(xTouchConfig.xTouchAccessCode, config["mqtt"]["accessCode"].as<const char *>());
+    // Disabled MQTT config loading for boombox build
+    /*strcpy(xTouchConfig.xTouchAccessCode, config["mqtt"]["accessCode"].as<const char *>());
     strcpy(xTouchConfig.xTouchSerialNumber, config["mqtt"]["serialNumber"].as<const char *>());
     strcpy(xTouchConfig.xTouchHost, config["mqtt"]["host"].as<const char *>());
-    strcpy(xTouchConfig.xTouchPrinterModel, config["mqtt"]["printerModel"].as<const char *>());
+    strcpy(xTouchConfig.xTouchPrinterModel, config["mqtt"]["printerModel"].as<const char *>());*/
 
-    return xtouch_filesystem_readJson(SD, xtouch_paths_config);
+    return config;
 }
 
 #endif

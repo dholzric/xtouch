@@ -66,14 +66,15 @@ void xtouch_events_onResetTouch(lv_msg_t *m)
 
 void xtouch_events_onChamberTempSwitch(lv_msg_t *m)
 {
-    if (xTouchConfig.xTouchChamberSensorEnabled)
+    // Disabled for boombox build - no chamber temperature sensor
+    /* if (xTouchConfig.xTouchChamberSensorEnabled)
     {
         xtouch_chamber_timer_start();
     }
     else
     {
         xtouch_chamber_timer_stop();
-    }
+    } */
 }
 
 void xtouch_setupGlobalEvents()

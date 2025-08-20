@@ -1,0 +1,39 @@
+XTouch Boombox v2.0.0-beta
+ESP32-2432S028R DIY Boombox Edition
+
+Release Features:
+- Converted 3D printer interface to boombox UI
+- 10-band graphic equalizer (60Hz-16kHz)
+- Bluetooth A2DP audio support
+- Spotify Connect integration
+- Comprehensive settings UI
+- Web demo for testing without hardware
+- WIHZI ZK-1001B amplifier integration
+- Brightness control with slider
+- EQ presets (Flat, Rock, Pop, Jazz)
+- Real-time spectrum analyzer visualization
+
+Build Date: 2025-08-20
+Hardware Target: ESP32-2432S028R (Cheap Yellow Display)
+Amplifier: WIHZI ZK-1001B (TPA3116D2 100W)
+Display: ILI9341 320x240 TFT (Landscape mode)
+
+Dependencies:
+- LVGL 8.3.9 for ESP32 UI
+- ESP32-A2DP for Bluetooth audio
+- TFT_eSPI for display driver
+- XPT2046_Touchscreen for touch input
+- ESPAsyncWebServer for Spotify OAuth
+- ArduinoJSON for configuration
+
+Development Status: Beta
+- Core functionality implemented
+- Web demo fully functional with 10-band EQ
+- ESP32 firmware compilation in progress
+- JavaScript EQ TypeError fixed
+- All major features tested in simulator
+
+Known Issues:
+- ESP32 firmware build requires dependency cleanup
+- Touch pin not configured (warning only)
+- MQTT/3D printer dependencies commented out for boombox build

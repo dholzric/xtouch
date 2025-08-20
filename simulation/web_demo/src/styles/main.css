@@ -227,19 +227,19 @@ body {
   pointer-events: none;
 }
 
-/* Display Screen */
+/* Display Screen - Landscape orientation for boombox */
 .display-screen {
   position: absolute;
-  top: 20px;
-  left: 80px;
-  width: 240px;
-  height: 320px;
+  top: 50px;
+  left: 40px;
+  width: 320px;
+  height: 240px;
   background: #000;
   border: 3px solid #333;
   border-radius: 8px;
   overflow: hidden;
   pointer-events: all;
-  transform: scale(0.75);
+  transform: scale(0.8);
   transform-origin: top left;
 }
 
@@ -314,10 +314,170 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 16px;
-  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.3);
   color: white;
-  font-size: 12px;
+  font-size: 8px;
+  height: 16px;
+}
+
+.left-status, .right-status {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 7px;
+}
+
+.center-title {
+  font-weight: bold;
+  font-size: 9px;
+  color: #00ff88;
+}
+
+/* Main Boombox Display */
+.main-display {
+  display: flex;
+  height: 130px;
+  padding: 2px;
+  gap: 4px;
+}
+
+.left-panel, .right-panel {
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.center-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+}
+
+/* Spectrum Display */
+.spectrum-display {
+  height: 60px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 2px;
+  padding: 2px;
+}
+
+#spectrum-bars {
+  width: 100%;
+  height: 100%;
+}
+
+.eq-quick {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.eq-preset-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-size: 7px;
+  cursor: pointer;
+}
+
+.eq-preset-btn.active {
+  background: var(--primary-color);
+  color: white;
+  box-shadow: 0 0 8px var(--primary-color);
+}
+
+.eq-preset-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+/* Amplifier Status */
+.amplifier-status {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+  padding: 6px;
+  text-align: center;
+}
+
+.amp-title {
+  font-size: 8px;
+  color: #ff8800;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.power-meter {
+  margin: 4px 0;
+}
+
+.power-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.power-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff00, #ffff00, #ff8800);
+  transition: width 0.3s ease;
+}
+
+.power-text {
+  font-size: 8px;
+  color: #ff8800;
+}
+
+.amp-temp {
+  font-size: 8px;
+  margin-top: 4px;
+}
+
+/* Volume Control */
+.volume-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.vol-label {
+  font-size: 7px;
+  color: white;
+}
+
+.vol-slider {
+  writing-mode: bt-lr;
+  -webkit-appearance: slider-vertical;
+  width: 15px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.vol-value {
+  font-size: 7px;
+  color: white;
+}
+
+/* Waveform Display */
+.waveform-display {
+  width: 100px;
+  height: 30px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  padding: 2px;
+}
+
+#waveform {
+  width: 100%;
+  height: 100%;
 }
 
 .back-btn {
@@ -416,6 +576,7 @@ body {
 .navigation-tabs {
   display: flex;
   background: rgba(0, 0, 0, 0.3);
+  height: 24px;
 }
 
 .tab-btn {
@@ -423,8 +584,8 @@ body {
   background: none;
   border: none;
   color: white;
-  padding: 16px;
-  font-size: 20px;
+  padding: 4px 2px;
+  font-size: 7px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
@@ -464,31 +625,78 @@ body {
 .eq-bands {
   display: flex;
   justify-content: space-between;
-  gap: 4px;
-  margin-bottom: 20px;
-  padding: 0 10px;
+  gap: 2px;
+  margin: 10px 0;
+  padding: 0 5px;
+  height: 140px;
 }
 
 .eq-band {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 3px;
+  width: 24px;
+}
+
+.eq-slider-container {
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .eq-slider {
   writing-mode: bt-lr; /* IE */
   -webkit-appearance: slider-vertical; /* WebKit */
-  width: 20px;
-  height: 120px;
-  background: rgba(255, 255, 255, 0.2);
+  width: 6px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.1);
   outline: none;
+  border-radius: 3px;
+  cursor: pointer;
+  /* Removed rotation - sliders now work correctly with up=positive */
+}
+
+.eq-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--primary-color);
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.eq-slider::-moz-range-thumb {
+  width: 14px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--primary-color);
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.eq-slider:hover::-webkit-slider-thumb {
+  background: #1565c0;
 }
 
 .eq-label {
   color: white;
-  font-size: 10px;
+  font-size: 7px;
   text-align: center;
+  font-weight: bold;
+  order: -1; /* Put label at top */
+}
+
+.eq-value {
+  color: var(--primary-color);
+  font-size: 6px;
+  text-align: center;
+  font-family: monospace;
+  min-height: 8px;
+  margin-top: 2px;
 }
 
 .eq-spectrum {
@@ -502,51 +710,90 @@ body {
   border-radius: 4px;
 }
 
-/* Settings Screen */
+/* Settings Screen - Compact */
 .settings-content {
   flex: 1;
-  padding: 20px;
+  padding: 8px;
   color: white;
+  overflow-y: auto;
 }
 
 .setting-group {
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 
 .setting-group h4 {
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   color: var(--primary-color);
-  font-size: 14px;
+  font-size: 8px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 4px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 7px;
 }
 
 .setting-item label {
-  font-size: 14px;
+  font-size: 7px;
+  flex: 1;
 }
 
 .setting-item input[type="range"] {
-  width: 80px;
+  width: 40px;
+  height: 8px;
 }
 
 .setting-item select {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-size: 7px;
+}
+
+.setting-item span {
+  font-size: 6px;
+  min-width: 25px;
+  text-align: right;
+}
+
+.setting-btn {
+  background: var(--primary-color);
+  border: none;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.setting-btn:hover {
+  background: #1565c0;
+}
+
+.setting-btn:active {
+  transform: scale(0.95);
 }
 
 .status.connected {
   color: var(--success-color);
+}
+
+.status.disconnected {
+  color: var(--error-color);
+}
+
+.wifi-name, .amp-info, .storage-info, .version {
+  color: var(--on-background);
+  opacity: 0.7;
 }
 
 .version {
@@ -913,4 +1160,51 @@ body {
 
 .glow {
   animation: glow 2s ease-in-out infinite;
+}
+
+/* Compact Boombox Overrides */
+.track-info {
+  margin: 3px 0 !important;
+  text-align: center;
+}
+
+.track-title {
+  font-size: 10px !important;
+  font-weight: 600;
+  margin-bottom: 1px !important;
+}
+
+.track-artist {
+  font-size: 8px !important;
+  opacity: 0.8;
+}
+
+.playback-controls {
+  gap: 8px !important;
+  margin: 4px 0 !important;
+}
+
+.btn-control {
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 10px !important;
+}
+
+.btn-play {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.progress-container {
+  margin: 4px 0 !important;
+  width: 100%;
+}
+
+.progress-track {
+  height: 3px !important;
+  margin-bottom: 2px !important;
+}
+
+.time-display {
+  font-size: 7px !important;
 }

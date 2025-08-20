@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xtouch ESP32-2432S028R Boombox Demo</title>
+    <link rel="icon" type="image/png" href="assets/icon.png">
+    <meta name="description" content="Interactive web demo of the ESP32-2432S028R boombox project with audio processing, equalizer, and touch interface simulation">
+  <script type="module" crossorigin src="/assets/index-DjKOhjdf.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DsHFMQPy.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-screen">
+            <div class="loading-spinner"></div>
+            <h2>Loading xtouch Boombox Demo</h2>
+            <p>Initializing audio engine and UI components...</p>
+            <div class="loading-progress">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- Main Demo Interface -->
+        <div id="main-interface" class="main-interface hidden">
+            <!-- Header -->
+            <header class="demo-header">
+                <div class="header-content">
+                    <h1>
+                        <img src="assets/esp32-icon.svg" alt="ESP32" class="esp32-icon">
+                        xtouch ESP32-2432S028R Boombox
+                    </h1>
+                    <div class="header-controls">
+                        <button id="fullscreen-btn" class="btn-icon" title="Toggle Fullscreen">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                            </svg>
+                        </button>
+                        <button id="info-btn" class="btn-icon" title="Project Information">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="demo-content">
+                <!-- ESP32 Device Simulation -->
+                <section class="device-section">
+                    <div class="device-container">
+                        <div class="esp32-board" id="esp32-board">
+                            <!-- 3D rendered ESP32-2432S028R board will be inserted here -->
+                            <div id="device-3d"></div>
+                            <canvas id="device-canvas" width="400" height="300"></canvas>
+                            
+                            <!-- Interactive elements overlay -->
+                            <div class="device-overlay">
+                                <!-- Display screen -->
+                                <div class="display-screen" id="display-screen">
+                                    <div class="screen-content" id="device-screen">
+                                        <!-- LVGL UI will be rendered here -->
+                                        <div class="ui-simulator" id="ui-simulator">
+                                            <div class="intro-screen screen active" id="intro-screen">
+                                                <h2>xtouch</h2>
+                                                <div class="loading-dots">
+                                                    <span></span><span></span><span></span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="home-screen screen" id="home-screen">
+                                                <div class="status-bar">
+                                                    <span class="wifi-status">📶</span>
+                                                    <span class="time">12:34</span>
+                                                    <span class="battery">🔋</span>
+                                                </div>
+                                                <div class="main-content">
+                                                    <h3>Now Playing</h3>
+                                                    <div class="track-info">
+                                                        <div class="track-title">Demo Track</div>
+                                                        <div class="track-artist">xtouch Simulator</div>
+                                                    </div>
+                                                    <div class="playback-controls">
+                                                        <button class="btn-control" id="prev-btn">⏮</button>
+                                                        <button class="btn-control btn-play" id="play-btn">▶</button>
+                                                        <button class="btn-control" id="next-btn">⏭</button>
+                                                    </div>
+                                                    <div class="progress-container">
+                                                        <div class="progress-track">
+                                                            <div class="progress-fill" id="progress-fill"></div>
+                                                        </div>
+                                                        <div class="time-display">
+                                                            <span id="current-time">0:00</span>
+                                                            <span id="total-time">3:45</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="navigation-tabs">
+                                                    <button class="tab-btn active" data-screen="home">🏠</button>
+                                                    <button class="tab-btn" data-screen="equalizer">🎚</button>
+                                                    <button class="tab-btn" data-screen="settings">⚙</button>
+                                                </div>
+                                            </div>
+
+                                            <div class="equalizer-screen screen" id="equalizer-screen">
+                                                <div class="status-bar">
+                                                    <button class="back-btn" data-target="home">←</button>
+                                                    <span class="screen-title">Equalizer</span>
+                                                </div>
+                                                <div class="eq-content">
+                                                    <div class="eq-presets">
+                                                        <button class="preset-btn active" data-preset="flat">Flat</button>
+                                                        <button class="preset-btn" data-preset="rock">Rock</button>
+                                                        <button class="preset-btn" data-preset="pop">Pop</button>
+                                                        <button class="preset-btn" data-preset="jazz">Jazz</button>
+                                                    </div>
+                                                    <div class="eq-bands" id="eq-bands">
+                                                        <!-- Equalizer bands will be generated dynamically -->
+                                                    </div>
+                                                    <div class="eq-spectrum" id="eq-spectrum">
+                                                        <canvas id="spectrum-canvas" width="240" height="80"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="settings-screen screen" id="settings-screen">
+                                                <div class="status-bar">
+                                                    <button class="back-btn" data-target="home">←</button>
+                                                    <span class="screen-title">Settings</span>
+                                                </div>
+                                                <div class="settings-content">
+                                                    <div class="setting-group">
+                                                        <h4>Audio</h4>
+                                                        <div class="setting-item">
+                                                            <label>Volume</label>
+                                                            <input type="range" id="volume-slider" min="0" max="100" value="70">
+                                                            <span id="volume-value">70%</span>
+                                                        </div>
+                                                        <div class="setting-item">
+                                                            <label>Bass Boost</label>
+                                                            <input type="checkbox" id="bass-boost" checked>
+                                                        </div>
+                                                    </div>
+                                                    <div class="setting-group">
+                                                        <h4>Display</h4>
+                                                        <div class="setting-item">
+                                                            <label>Brightness</label>
+                                                            <input type="range" id="brightness-slider" min="10" max="100" value="80">
+                                                            <span id="brightness-value">80%</span>
+                                                        </div>
+                                                        <div class="setting-item">
+                                                            <label>Sleep Timer</label>
+                                                            <select id="sleep-timer">
+                                                                <option value="0">Never</option>
+                                                                <option value="30">30 seconds</option>
+                                                                <option value="60">1 minute</option>
+                                                                <option value="300">5 minutes</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="setting-group">
+                                                        <h4>System</h4>
+                                                        <div class="setting-item">
+                                                            <label>WiFi</label>
+                                                            <span class="status connected">Connected</span>
+                                                        </div>
+                                                        <div class="setting-item">
+                                                            <label>Firmware</label>
+                                                            <span class="version">v1.0.0</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Touch interaction layer -->
+                                <div class="touch-layer" id="touch-layer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Audio Controls and Visualization -->
+                <section class="audio-section">
+                    <div class="audio-controls">
+                        <h3>Audio Engine Control</h3>
+                        
+                        <!-- File Upload -->
+                        <div class="control-group">
+                            <label for="audio-file">Load Audio File:</label>
+                            <input type="file" id="audio-file" accept="audio/*">
+                            <button id="demo-track-btn" class="btn-secondary">Use Demo Track</button>
+                        </div>
+
+                        <!-- Master Controls -->
+                        <div class="control-group">
+                            <button id="master-play" class="btn-primary">Play</button>
+                            <button id="master-pause" class="btn-secondary">Pause</button>
+                            <button id="master-stop" class="btn-secondary">Stop</button>
+                        </div>
+
+                        <!-- Volume Control -->
+                        <div class="control-group">
+                            <label for="master-volume">Master Volume:</label>
+                            <input type="range" id="master-volume" min="0" max="100" value="70">
+                            <span id="master-volume-value">70%</span>
+                        </div>
+
+                        <!-- Audio Visualization -->
+                        <div class="visualization-container">
+                            <canvas id="audio-visualizer" width="300" height="150"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Performance Monitor -->
+                    <div class="performance-monitor">
+                        <h3>Performance Monitor</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <label>CPU Usage:</label>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="cpu-usage" style="width: 25%"></div>
+                                </div>
+                                <span id="cpu-percentage">25%</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Memory:</label>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="memory-usage" style="width: 40%"></div>
+                                </div>
+                                <span id="memory-percentage">40%</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Audio Buffer:</label>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="buffer-usage" style="width: 60%"></div>
+                                </div>
+                                <span id="buffer-percentage">60%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="performance-details">
+                            <div class="detail-row">
+                                <span>Sample Rate:</span>
+                                <span id="sample-rate">44.1 kHz</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Buffer Size:</span>
+                                <span id="buffer-size">512 samples</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Latency:</span>
+                                <span id="latency">11.6 ms</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Dropouts:</span>
+                                <span id="dropouts">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Simulation Controls -->
+                <section class="simulation-section">
+                    <div class="simulation-controls">
+                        <h3>Simulation Controls</h3>
+                        
+                        <div class="control-group">
+                            <label>Simulation Mode:</label>
+                            <select id="simulation-mode">
+                                <option value="realtime">Real-time</option>
+                                <option value="fast">Fast (10x)</option>
+                                <option value="debug">Debug Mode</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Touch Simulation:</label>
+                            <button id="enable-touch" class="btn-toggle active">Enable Touch</button>
+                            <button id="auto-demo" class="btn-secondary">Auto Demo</button>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Hardware Simulation:</label>
+                            <button id="simulate-wifi" class="btn-toggle">WiFi Disconnect</button>
+                            <button id="simulate-low-battery" class="btn-toggle">Low Battery</button>
+                            <button id="simulate-sd-error" class="btn-toggle">SD Error</button>
+                        </div>
+                    </div>
+
+                    <!-- Debug Console -->
+                    <div class="debug-console">
+                        <h4>Debug Console</h4>
+                        <div class="console-output" id="console-output">
+                            <div class="log-entry info">[INFO] xtouch demo initialized</div>
+                            <div class="log-entry debug">[DEBUG] Audio engine started</div>
+                            <div class="log-entry info">[INFO] Ready for interaction</div>
+                        </div>
+                        <div class="console-input">
+                            <input type="text" id="console-command" placeholder="Enter debug command...">
+                            <button id="console-send">Send</button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Info Modal -->
+        <div id="info-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>ESP32-2432S028R Boombox Project</h2>
+                    <button class="modal-close" id="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>This is an interactive web demonstration of the xtouch ESP32-2432S028R boombox project.</p>
+                    
+                    <h3>Features Demonstrated:</h3>
+                    <ul>
+                        <li>ESP32-2432S028R hardware simulation</li>
+                        <li>2.8" ILI9341 TFT display with touch interface</li>
+                        <li>Real-time audio processing and equalizer</li>
+                        <li>LVGL user interface</li>
+                        <li>I2S audio output simulation</li>
+                        <li>Performance monitoring</li>
+                    </ul>
+
+                    <h3>Technologies Used:</h3>
+                    <ul>
+                        <li>Three.js for 3D hardware visualization</li>
+                        <li>Web Audio API for audio processing</li>
+                        <li>Canvas for UI rendering and visualization</li>
+                        <li>WebGL for hardware acceleration</li>
+                    </ul>
+
+                    <h3>Instructions:</h3>
+                    <ol>
+                        <li>Click on the simulated display to interact with the UI</li>
+                        <li>Upload your own audio files or use the demo track</li>
+                        <li>Adjust the equalizer settings and hear the changes</li>
+                        <li>Monitor performance metrics in real-time</li>
+                        <li>Try different simulation modes and hardware scenarios</li>
+                    </ol>
+
+                    <div class="project-links">
+                        <a href="https://github.com/your-repo/xtouch" target="_blank" class="btn-link">View Source Code</a>
+                        <a href="#" class="btn-link">Documentation</a>
+                        <a href="#" class="btn-link">Hardware Guide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Context for Web Audio API -->
+    <audio id="audio-element" crossorigin="anonymous"></audio>
+
+    <!-- Scripts -->
+</body>
+</html>

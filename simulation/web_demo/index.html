@@ -51,13 +51,14 @@
                     <div class="device-container">
                         <div class="esp32-board" id="esp32-board">
                             <!-- 3D rendered ESP32-2432S028R board will be inserted here -->
+                            <div id="device-3d"></div>
                             <canvas id="device-canvas" width="400" height="300"></canvas>
                             
                             <!-- Interactive elements overlay -->
                             <div class="device-overlay">
                                 <!-- Display screen -->
                                 <div class="display-screen" id="display-screen">
-                                    <div class="screen-content" id="screen-content">
+                                    <div class="screen-content" id="device-screen">
                                         <!-- LVGL UI will be rendered here -->
                                         <div class="ui-simulator" id="ui-simulator">
                                             <div class="intro-screen screen active" id="intro-screen">
@@ -69,35 +70,80 @@
                                             
                                             <div class="home-screen screen" id="home-screen">
                                                 <div class="status-bar">
-                                                    <span class="wifi-status">📶</span>
-                                                    <span class="time">12:34</span>
-                                                    <span class="battery">🔋</span>
-                                                </div>
-                                                <div class="main-content">
-                                                    <h3>Now Playing</h3>
-                                                    <div class="track-info">
-                                                        <div class="track-title">Demo Track</div>
-                                                        <div class="track-artist">xtouch Simulator</div>
+                                                    <div class="left-status">
+                                                        <span class="time">12:34</span>
+                                                        <span class="wifi-status">📶</span>
                                                     </div>
-                                                    <div class="playback-controls">
-                                                        <button class="btn-control" id="prev-btn">⏮</button>
-                                                        <button class="btn-control btn-play" id="play-btn">▶</button>
-                                                        <button class="btn-control" id="next-btn">⏭</button>
-                                                    </div>
-                                                    <div class="progress-container">
-                                                        <div class="progress-track">
-                                                            <div class="progress-fill" id="progress-fill"></div>
-                                                        </div>
-                                                        <div class="time-display">
-                                                            <span id="current-time">0:00</span>
-                                                            <span id="total-time">3:45</span>
-                                                        </div>
+                                                    <div class="center-title">XTouch Boombox</div>
+                                                    <div class="right-status">
+                                                        <span class="volume-indicator">🔊 70%</span>
+                                                        <span class="battery">🔋 100%</span>
                                                     </div>
                                                 </div>
+                                                
+                                                <div class="main-display">
+                                                    <div class="left-panel">
+                                                        <div class="spectrum-display">
+                                                            <canvas id="spectrum-bars" width="80" height="120"></canvas>
+                                                        </div>
+                                                        <div class="eq-quick">
+                                                            <button class="eq-preset-btn active" data-preset="rock">Rock</button>
+                                                            <button class="eq-preset-btn" data-preset="pop">Pop</button>
+                                                            <button class="eq-preset-btn" data-preset="jazz">Jazz</button>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="center-panel">
+                                                        <div class="track-info">
+                                                            <div class="track-title">Boombox Demo</div>
+                                                            <div class="track-artist">XTouch Audio</div>
+                                                        </div>
+                                                        
+                                                        <div class="waveform-display">
+                                                            <canvas id="waveform" width="120" height="40"></canvas>
+                                                        </div>
+                                                        
+                                                        <div class="playback-controls">
+                                                            <button class="btn-control" id="prev-btn">⏮</button>
+                                                            <button class="btn-control btn-play" id="play-btn">▶</button>
+                                                            <button class="btn-control" id="next-btn">⏭</button>
+                                                        </div>
+                                                        
+                                                        <div class="progress-container">
+                                                            <div class="progress-track">
+                                                                <div class="progress-fill" id="progress-fill"></div>
+                                                            </div>
+                                                            <div class="time-display">
+                                                                <span id="current-time">0:00</span>
+                                                                <span id="total-time">3:45</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="right-panel">
+                                                        <div class="amplifier-status">
+                                                            <div class="amp-title">WIHZI ZK-1001B</div>
+                                                            <div class="power-meter">
+                                                                <div class="power-bar">
+                                                                    <div class="power-fill" style="width: 45%"></div>
+                                                                </div>
+                                                                <span class="power-text">45W</span>
+                                                            </div>
+                                                            <div class="amp-temp">🌡️ 42°C</div>
+                                                        </div>
+                                                        
+                                                        <div class="volume-control">
+                                                            <div class="vol-label">Master</div>
+                                                            <input type="range" class="vol-slider" id="volume-slider" min="0" max="100" value="70" orient="vertical">
+                                                            <div class="vol-value" id="volume-value">70</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
                                                 <div class="navigation-tabs">
-                                                    <button class="tab-btn active" data-screen="home">🏠</button>
-                                                    <button class="tab-btn" data-screen="equalizer">🎚</button>
-                                                    <button class="tab-btn" data-screen="settings">⚙</button>
+                                                    <button class="tab-btn active" data-screen="home">🏠 Home</button>
+                                                    <button class="tab-btn" data-screen="equalizer">🎚 EQ</button>
+                                                    <button class="tab-btn" data-screen="settings">⚙ Settings</button>
                                                 </div>
                                             </div>
 
@@ -132,12 +178,41 @@
                                                         <h4>Audio</h4>
                                                         <div class="setting-item">
                                                             <label>Volume</label>
-                                                            <input type="range" id="volume-slider" min="0" max="100" value="70">
-                                                            <span id="volume-value">70%</span>
+                                                            <input type="range" id="settings-volume-slider" min="0" max="100" value="70">
+                                                            <span id="settings-volume-value">70%</span>
                                                         </div>
                                                         <div class="setting-item">
                                                             <label>Bass Boost</label>
                                                             <input type="checkbox" id="bass-boost" checked>
+                                                        </div>
+                                                    </div>
+                                                    <div class="setting-group">
+                                                        <h4>Music Sources</h4>
+                                                        <div class="setting-item">
+                                                            <label>Load Audio File</label>
+                                                            <button class="setting-btn" id="load-music-btn">📂 Browse</button>
+                                                        </div>
+                                                        <div class="setting-item">
+                                                            <label>Bluetooth Audio</label>
+                                                            <button class="setting-btn" id="bluetooth-pair-btn">🔵 Pair Device</button>
+                                                        </div>
+                                                        <div class="setting-item">
+                                                            <label>Spotify Connect</label>
+                                                            <button class="setting-btn" id="spotify-setup-btn">🎵 Setup</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="setting-group">
+                                                        <h4>WiFi Network</h4>
+                                                        <div class="setting-item">
+                                                            <label>Status</label>
+                                                            <span class="status connected" id="wifi-status">Connected</span>
+                                                        </div>
+                                                        <div class="setting-item">
+                                                            <label>Network</label>
+                                                            <span class="wifi-name" id="wifi-name">XTouch_Demo</span>
+                                                        </div>
+                                                        <div class="setting-item">
+                                                            <button class="setting-btn" id="wifi-setup-btn">⚙ Configure WiFi</button>
                                                         </div>
                                                     </div>
                                                     <div class="setting-group">
@@ -158,14 +233,18 @@
                                                         </div>
                                                     </div>
                                                     <div class="setting-group">
-                                                        <h4>System</h4>
-                                                        <div class="setting-item">
-                                                            <label>WiFi</label>
-                                                            <span class="status connected">Connected</span>
-                                                        </div>
+                                                        <h4>System Info</h4>
                                                         <div class="setting-item">
                                                             <label>Firmware</label>
                                                             <span class="version">v1.0.0</span>
+                                                        </div>
+                                                        <div class="setting-item">
+                                                            <label>Amplifier</label>
+                                                            <span class="amp-info">WIHZI ZK-1001B</span>
+                                                        </div>
+                                                        <div class="setting-item">
+                                                            <label>Storage</label>
+                                                            <span class="storage-info">2.1GB Free</span>
                                                         </div>
                                                     </div>
                                                 </div>

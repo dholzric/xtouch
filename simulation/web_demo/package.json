@@ -31,10 +31,6 @@
     "@types/node": "^20.0.0"
   },
   "dependencies": {
-    "three": "^0.157.0",
-    "web-audio-api": "^0.2.2",
-    "wasm-audio-worklet": "^1.0.0",
-    "canvas": "^2.11.2",
-    "socket.io-client": "^4.7.0"
+    "three": "^0.157.0"
   }
 }

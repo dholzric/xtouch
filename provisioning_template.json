@@ -1,0 +1,50 @@
+{
+  "_comment": "XTouch Boombox Configuration - Copy this to 'provisioning.json' and fill in your details",
+  
+  "ssid": "your_wifi_network_name",
+  "pwd": "your_wifi_password",
+  "timeout": 10000,
+  
+  "spotify": {
+    "_comment": "Get these from https://developer.spotify.com/dashboard",
+    "client_id": "your_spotify_client_id_here",
+    "client_secret": "your_spotify_client_secret_here",
+    "_setup_instructions": [
+      "1. Go to https://developer.spotify.com/dashboard",
+      "2. Click 'Create App'", 
+      "3. Name: XTouch Boombox",
+      "4. Description: ESP32 Spotify Connect Speaker",
+      "5. Website: http://localhost:8888",
+      "6. Redirect URI: http://[YOUR_ESP32_IP]:8888/callback",
+      "7. Copy Client ID and Client Secret above"
+    ]
+  },
+  
+  "bluetooth": {
+    "device_name": "XTouch Boombox",
+    "pin": "0000",
+    "auto_connect": true,
+    "discoverable": true
+  },
+  
+  "amplifier": {
+    "model": "WIHZI ZK-1001B", 
+    "max_power": 100,
+    "i2s_pins": {
+      "bck": 26,
+      "ws": 25, 
+      "data": 22
+    }
+  },
+  
+  "equalizer": {
+    "default_preset": "rock",
+    "bands": [60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000]
+  },
+  
+  "display": {
+    "brightness": 80,
+    "sleep_timeout": 300000,
+    "orientation": "landscape"
+  }
+}
